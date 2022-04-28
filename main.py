@@ -18,11 +18,8 @@ def get_all_words(file_for_read):
         file_for_read -- name file
 
     """
-    list_words = []
-    with open(file_for_read, 'r') as file_for_read:
-        for line in file_for_read:
-            list_words.append(line.replace('\n', ''))
-    return list_words
+    with open(file_for_read) as file_for_read:
+        return list(file_for_read.readlines())
 
 
 def get_word_with_rand_symbols(list_, count):
@@ -33,9 +30,10 @@ def get_word_with_rand_symbols(list_, count):
         count -- word number in the list
 
     """
-    rand_word = ''.join(sample(list_[count],  len(list_[count])))
-    print(f'Угадайте слово: {rand_word}')
-    return list_[count]
+    word = list_[count].replace('\n', '')
+    rand_word = ''.join(sample(word, len(word)))
+    print(f"Угадайте слово: {rand_word}")
+    return word
 
 
 def input_user_answer():
@@ -79,13 +77,15 @@ def get_stats(file_for_stats):
         file_for_stats -- name file with information about games and the record
 
     """
-    with open(file_for_stats, 'r') as file:
-        max_points = 0
-        count = 0
-        for line in file:
-            count += 1
-            if int(line.replace('\n', '').split(' ')[1]) > max_points:
-                max_points = int(line.replace('\n', '').split(' ')[1])
+    with open(file_for_stats) as file:
+        stats_file = list(file.readlines())
+    max_points = 0
+    count = 0
+    for word in stats_file:
+        point = int(word.replace('\n', '').split(' ')[1])
+        count += 1
+        if point > max_points:
+            max_points = point
     print(f'Всего игр сыграно: {count}')
     print(f'Максимальный рекорд: {max_points}')
 
