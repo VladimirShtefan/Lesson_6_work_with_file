@@ -10,12 +10,12 @@ def get_rand_word_and_points(file_for_read):
         file_for_read -- file with word for questions
 
     """
-    points = 0
+    points_ = 0
     try:
         with open(file_for_read) as file_for_read:
             list_ = list(file_for_read.readlines())
     except FileNotFoundError:
-        return 'Не найден фаил'
+        return print('Не найден фаил')
     for word in list_:
         word = word.split()[0]
         rand_word = ''.join(sample(word, len(word)))
@@ -23,10 +23,10 @@ def get_rand_word_and_points(file_for_read):
         user_answer = input('Введите ответ: ')
         if user_answer.lower() == word.lower():
             print(f'Верно! Вы получаете 10 очков.')
-            points += 10
+            points_ += 10
         else:
             print(f'Неверно! Верный ответ – {word}.')
-    return str(points)
+    return points_
 
 
 def write_history(file_for_write, name_leader, sum_points):
@@ -64,5 +64,7 @@ def get_stats(file_for_stats):
 
 if __name__ == '__main__':
     user_name = input('Введите Ваше имя: ')
-    write_history(File_leaders, user_name, get_rand_word_and_points(File_with_words))
-    get_stats(File_leaders)
+    points = str(get_rand_word_and_points(File_with_words))
+    if points.isdigit():
+        write_history(File_leaders, user_name, points)
+        get_stats(File_leaders)
