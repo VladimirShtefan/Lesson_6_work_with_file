@@ -1,60 +1,32 @@
 from random import sample
-file_with_words = 'words.txt'
-file_leaders = 'history.txt'
-points = 0
-step = 0
+File_with_words = 'words.txt'
+File_leaders = 'history.txt'
 
 
-def input_user_name():
-    """Function to get username."""
-    name = input('Введите Ваше имя: ')
-    return name
-
-
-def get_all_words(file_for_read):
-    """Reading from a file list with words.
-
-        Keyword arguments:
-        file_for_read -- name file
-
-    """
-    with open(file_for_read) as file_for_read:
-        return list(file_for_read.readlines())
-
-
-def get_word_with_rand_symbols(list_, count):
+def get_rand_word_and_points(file_for_read):
     """Moving letters in a word.
 
         Keyword arguments:
-        list_ -- list with words
-        count -- word number in the list
+        file_for_read -- file with word for questions
 
     """
-    word = list_[count].replace('\n', '')
-    rand_word = ''.join(sample(word, len(word)))
-    print(f"Угадайте слово: {rand_word}")
-    return word
-
-
-def input_user_answer():
-    """Function to get unswer."""
-    answer = input('Введите ответ: ')
-    return answer
-
-
-def check_the_correct_answer(random_word, user_answer):
-    """Function to check the correct answer.
-
-        Keyword arguments:
-        random_word -- jumbled word
-        user_answer -- user answer
-
-    """
-    if random_word.lower() == user_answer.lower():
-        print(f'Верно! Вы получаете 10 очков.')
-        return 10
-    print(f'Неверно! Верный ответ – {random_word}.')
-    return 0
+    points = 0
+    try:
+        with open(file_for_read) as file_for_read:
+            list_ = list(file_for_read.readlines())
+    except FileNotFoundError:
+        return 'Не найден фаил'
+    for word in list_:
+        word = word.split()[0]
+        rand_word = ''.join(sample(word, len(word)))
+        print(f"Угадайте слово: {rand_word}")
+        user_answer = input('Введите ответ: ')
+        if user_answer.lower() == word.lower():
+            print(f'Верно! Вы получаете 10 очков.')
+            points += 10
+        else:
+            print(f'Неверно! Верный ответ – {word}.')
+    return str(points)
 
 
 def write_history(file_for_write, name_leader, sum_points):
@@ -82,7 +54,7 @@ def get_stats(file_for_stats):
     max_points = 0
     count = 0
     for word in stats_file:
-        point = int(word.replace('\n', '').split(' ')[1])
+        point = int(word.split()[1])
         count += 1
         if point > max_points:
             max_points = point
@@ -91,10 +63,6 @@ def get_stats(file_for_stats):
 
 
 if __name__ == '__main__':
-    user_name = input_user_name()
-    while step < len(get_all_words(file_with_words)):
-        points += check_the_correct_answer(get_word_with_rand_symbols(get_all_words(file_with_words), step),
-                                           input_user_answer())
-        step += 1
-    write_history(file_leaders, user_name, points)
-    get_stats(file_leaders)
+    user_name = input('Введите Ваше имя: ')
+    write_history(File_leaders, user_name, get_rand_word_and_points(File_with_words))
+    get_stats(File_leaders)
